@@ -1,39 +1,33 @@
 'use strict';
 
 var
-compileTemplate = require('simple-template-js');
+compile = require('simple-template-js');
 
-var renderRoot = compileTemplate([
-  '# <%= ctx.title %>',
-  '<%= ctx.description || "" %>',
-  '| property | type | description |',
-  '|----------|------|-------------|'
-].join('\n'), 'path,ctx');
+var
+defaultTemplate = [
+  '<% if (path.length === 0) { %>',
+  '# <%= prop.title %>\n',
+  '<%= prop.description || "" %>\n',
+  '| property | type | description |\n',
+  '|----------|------|-------------|\n',
+  '<% } else { %>',
+  '| <%= path.join(".") %> | <%= prop.enum ? "enum" : prop.type %> | <%= prop.description %> |\n',
+  '<% } %>'
+].join('');
 
-var render = compileTemplate([
-  '| <%= path.join(".") %> ',
-  '| <%= ctx.enum ? "enum" : ctx.type %> ',
-  '| <%= ctx.description %> |'
-].join(''), 'path,ctx');
-
-function walk(out, path, ctx) {
-  if (path.length === 0) {
-    out.push(renderRoot(path, ctx));
-  } else {
-    out.push(render(path, ctx));
-  }
-
-  if (ctx.properties) {
-    for (var name in ctx.properties) {
-      walk(out, path.concat(name), ctx.properties[name]);
+function walk(out, path, prop, render) {
+  out.push(render(path, prop));
+  if (prop.properties) {
+    for (var name in prop.properties) {
+      walk(out, path.concat(name), prop.properties[name], render);
     }
   }
 }
 
-function jsonDoc(schema) {
-  var out = [];
-  walk(out, [], schema);
-  return out.join('\n');
+function jsonDoc(schema, template) {
+  var out = [], render = compile(template || defaultTemplate, 'path,prop');
+  walk(out, [], schema, render);
+  return out.join('');
 }
 
 module.exports = jsonDoc;

@@ -1,6 +1,6 @@
 {
   "name": "json-doc",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Make Markdown from JSON Schema",
   "author": "snoguchi",
   "main": "./json-doc.js",
