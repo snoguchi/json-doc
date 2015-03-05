@@ -1,0 +1,14 @@
+{
+  "name": "json-doc",
+  "version": "0.0.1",
+  "description": "Make Markdown from JSON Schema",
+  "author": "snoguchi",
+  "main": "./json-doc.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/snoguchi/json-doc.git"
+  },
+  "dependencies": {
+    "simple-template-js": "0.0.2"
+  }
+}
